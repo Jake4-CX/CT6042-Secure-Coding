@@ -4,6 +4,7 @@ import { type Express, type NextFunction } from "express";
 import { validationResult } from "express-validator";
 import morgan = require("morgan");
 import { Routes } from "./routes";
+import expressEjsLayouts = require("express-ejs-layouts");
 
 export default class App {
 
@@ -14,6 +15,13 @@ export default class App {
     this.app.use(morgan("tiny"));
     this.app.use(bodyParser.json());
     this.app.use(this.handleError);
+
+    this.app.set('layout', '../views/layouts/main');
+    this.app.set('view engine', 'ejs');
+
+    this.app.use(express.static('public'));
+
+    this.app.use(expressEjsLayouts);
 
     this.setupRoutes(Routes, "");
 
@@ -30,9 +38,10 @@ export default class App {
     const router = express.Router();
 
     routes.forEach((route) => {
-      (router as any)[route.method](route.route,
+
+      (router)[route.method.toLowerCase()](route.route,
         ...route.validation,
-        // route.authorization === true ? jwtAuthentication : [],
+        route.authorization === true ? [] : [],
         async (req: express.Request, res: express.Response, next: NextFunction) => {
           try {
             const errors = validationResult(req);
