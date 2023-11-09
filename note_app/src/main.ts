@@ -14,7 +14,6 @@ export default class App {
 
     this.app.use(morgan("tiny"));
     this.app.use(bodyParser.json());
-    this.app.use(this.handleError);
 
     this.app.set('layout', '../views/layouts/main');
     this.app.set('view engine', 'ejs');
@@ -24,6 +23,8 @@ export default class App {
     this.app.use(expressEjsLayouts);
 
     this.setupRoutes(Routes, "");
+
+    this.app.use(this.handleError);
 
     // API endpoints:
     //  - Register,
@@ -65,7 +66,10 @@ export default class App {
 
 
   public handleError(error: any, req: express.Request, res: express.Response, next: NextFunction) {
+    if (res.headersSent) {
+      return next(error);
+    }
+
     res.status(error.statusCode || 500).send({ message: error.message });
   }
-
 }

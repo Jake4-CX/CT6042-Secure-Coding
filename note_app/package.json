@@ -5,11 +5,17 @@
   "type": "commonjs",
   "private": true,
   "dependencies": {
+    "@types/ejs": "^3.1.5",
+    "@types/express-ejs-layouts": "^2.5.4",
     "body-parser": "^1.20.2",
+    "dotenv": "^16.3.1",
+    "ejs": "^3.1.9",
     "express": "^4.18.2",
+    "express-ejs-layouts": "^2.5.1",
     "express-validator": "^7.0.1",
     "http-errors": "^2.0.0",
     "morgan": "^1.10.0",
+    "mysql2": "^3.6.3",
     "ts-node": "^10.9.1",
     "typescript": "^5.2.2"
   },
@@ -19,10 +25,14 @@
     "@types/http-errors": "^2.0.4",
     "@types/morgan": "^1.9.9",
     "@types/node": "^20.8.10",
-    "nodemon": "^3.0.1"
+    "concurrently": "^8.2.2",
+    "nodemon": "^3.0.1",
+    "tailwindcss": "^3.3.5"
   },
   "scripts": {
-    "start": "ts-node src/index.ts",
-    "dev": "nodemon -w *.ts -w *.env src/index.ts"
+    "start": "ts-node src/main.ts",
+    "dev": "concurrently \"npm run watch:tailwind\" \"nodemon -w *.ts -w *.env src/index.ts\"",
+    "build:tailwind": "tailwindcss -i ./public/css/input.css -o ./public/css/app.css",
+    "watch:tailwind": "npm run build:tailwind -- --watch"
   }
 }
