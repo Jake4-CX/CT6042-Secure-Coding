@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%- locals.title %></title>
+  <meta name="description" content="<%- locals.description %>">
+  <link rel="stylesheet" href="/css/app.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,400;1,500&display=swap"
+    rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
+
+</head>
+
+<body>
+  <div class="fixed inset-0 -z-20 bg-[#f5f5f5]"></div>
+  <section class="min-w-full min-h-screen h-max flex flex-grow flex-col items-center space-y-3">
+    <%- include('../components/header.ejs') %>
+      <section class="w-full flex flex-col flex-grow items-center">
+        <%- body %>
+      </section>
+      <%- include('../components/footer.ejs') %>
+  </section>
+</body>
+
+</html>

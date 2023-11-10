@@ -1,0 +1,138 @@
+<div class="max-w-xl w-full space-y-1 mx-[4%] bg-gray-50 rounded-lg p-4" id="messagesContainer">
+
+  <form onsubmit="return addMessage(event)">
+
+    <!-- Message Title Input -->
+    <div class="w-full">
+      <label for="messageTitle" class="text-gray-900 text-sm font-semibold">Message Title</label>
+      <input type="text" name="messageTitle" id="messageTitle"
+        class="w-full h-8 px-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-gray-400 duration-300 focus:border-transparent"
+        placeholder="Enter your message title" required />
+    </div>
+
+    <!-- Message Content Input -->
+    <div class="w-full">
+      <label for="messageContent" class="text-gray-900 text-sm font-semibold">Message Content</label>
+      <textarea name="messageContent" id="messageContent"
+        class="w-full h-16 px-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-gray-400 duration-300 focus:border-transparent"
+        placeholder="Enter your message content" required></textarea>
+    </div>
+
+
+    <!-- Submit Button -->
+    <div class="w-full min-h-12 bg-green-500 hover:bg-green-600 duration-300 rounded-lg px-2 py-1">
+      <button class="w-full h-full flex items-center justify-center text-gray-100 ">
+        <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+        </svg>
+        Add Message
+      </button>
+    </div>
+
+  </form>
+</div>
+
+<script>
+  async function loadMessages() {
+    try {
+      const response = await axios.get('/messages');
+      const messages = response.data;
+
+      const container = document.getElementById('messagesContainer');
+      messages.forEach(message => {
+        console.log(message);
+        // Create the message element
+        const messageElement = document.createElement('div');
+        messageElement.className = 'w-full min-h-12 bg-gray-200 rounded-lg px-2 py-1 relative';
+        messageElement.innerHTML = `
+          <div>
+            <h2 class="text-lg font-bold text-gray-900"> ${message.messageTitle}</h2>
+            <div class="flex items-center space-x-3">
+              <p class="text-gray-900 text-xs">Author: ${message.user.userName}</p>
+              <p class="text-gray-900 text-xs">Date: ${dayjs(message.createdAt)}</p>
+            </div>
+            <p class="text-gray-900">${message.messageContent}</p>
+          </div>
+          <!-- Edit & Delete buttons - Top Right corner -->
+          <div class="absolute flex flex-row space-x-2 top-2 right-2">
+            <div onclick="window.location.href='/message/${message.id}/edit'" class="w-4 h-4 fill-gray-500 hover:fill-gray-600 duration-300 cursor-pointer">
+              <svg xmlns="http://www.w3.org/2000/svg" height="1em"
+                viewBox="0 0 576 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+                <path
+                  d="M402.6 83.2l90.2 90.2c3.8 3.8 3.8 10 0 13.8L274.4 405.6l-92.8 10.3c-12.4 1.4-22.9-9.1-21.5-21.5l10.3-92.8L388.8 83.2c3.8-3.8 10-3.8 13.8 0zm162-22.9l-48.8-48.8c-15.2-15.2-39.9-15.2-55.2 0l-35.4 35.4c-3.8 3.8-3.8 10 0 13.8l90.2 90.2c3.8 3.8 10 3.8 13.8 0l35.4-35.4c15.2-15.3 15.2-40 0-55.2zM384 346.2V448H64V128h229.8c3.2 0 6.2-1.3 8.5-3.5l40-40c7.6-7.6 2.2-20.5-8.5-20.5H48C21.5 64 0 85.5 0 112v352c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V306.2c0-10.7-12.9-16-20.5-8.5l-40 40c-2.2 2.3-3.5 5.3-3.5 8.5z" />
+              </svg>
+            </div>
+
+            <div onclick="deleteMessage(${message.id})" class="w-4 h-4 fill-gray-500 hover:fill-gray-600 duration-300 cursor-pointer">
+              <svg xmlns="http://www.w3.org/2000/svg" height="1em"
+                viewBox="0 0 384 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+                <path
+                  d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
+              </svg>
+            </div>
+          </div>
+        `;
+        container.appendChild(messageElement);
+      });
+    } catch (error) {
+      console.error('Error loading messages:', error);
+    }
+  }
+
+  async function addMessage(e) {
+    e.preventDefault();
+
+    const token = localStorage.getItem('messageBoardToken');
+
+    if (!token || token === '') {
+      alert('You must be logged in to add a message');
+      return false;
+    }
+
+    try {
+      const messageTitle = document.getElementById('messageTitle').value;
+      const messageContent = document.getElementById('messageContent').value;
+
+      const response = await axios.post('/messages', {
+        messageTitle,
+        messageContent
+      }, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      console.log(response.data);
+      window.location.reload();
+    } catch (error) {
+      console.error('Error adding message:', error);
+    }
+  }
+
+  async function deleteMessage(messageId) {
+    const token = localStorage.getItem('messageBoardToken');
+
+    if (!token || token === '') {
+      alert('You must be logged in to delete a message');
+      return false;
+    }
+
+    try {
+      const response = await axios.delete('/messages/' + messageId, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      console.log(response.data);
+      window.location.reload();
+    } catch (error) {
+      console.error('Error deleting message:', error);
+    }
+  }
+
+  // Load messages when the page loads
+  window.onload = loadMessages;
+</script>

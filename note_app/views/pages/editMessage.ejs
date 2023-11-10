@@ -1,0 +1,100 @@
+<div class="w-full max-w-lg space-y-1 mx-[4%] bg-gray-50 rounded-lg p-4">
+
+  <form onsubmit="return editMessage(event)">
+
+    <!-- Message Title Input -->
+    <div class="w-full">
+      <label for="messageTitle" class="text-gray-900 text-sm font-semibold">Message Title</label>
+      <input type="text" name="messageTitle" id="messageTitle"
+        class="w-full h-8 px-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-gray-400 duration-300 focus:border-transparent"
+        placeholder="Enter your message title" required />
+    </div>
+
+    <!-- Message Content Input -->
+    <div class="w-full">
+      <label for="messageContent" class="text-gray-900 text-sm font-semibold">Message Content</label>
+      <textarea name="messageContent" id="messageContent"
+        class="w-full h-16 px-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-gray-400 duration-300 focus:border-transparent"
+        placeholder="Enter your message content" required></textarea>
+    </div>
+
+
+    <!-- Submit Button -->
+    <div class="w-full min-h-12 bg-green-500 hover:bg-green-600 duration-300 rounded-lg px-2 py-1">
+      <button class="w-full h-full flex items-center justify-center text-gray-100 ">
+        <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+        </svg>
+        Update Message
+      </button>
+    </div>
+
+  </form>
+
+</div>
+
+<script>
+
+  async function loadMessage() {
+
+    const messageId = `<%= messageId %>`;
+
+    if (messageId == "" || messageId == undefined || messageId == null) {
+      console.log('No message id provided');
+      return;
+    }
+
+    try {
+      const response = await axios.get('/messages/' + messageId);
+      const message = response.data;
+
+      if (message == null || message == undefined) {
+        return;
+      }
+
+      console.log(message);
+
+      document.getElementById('messageTitle').value = message.messageTitle;
+      document.getElementById('messageContent').value = message.messageContent;
+
+
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async function editMessage(e) {
+    e.preventDefault();
+
+    const token = localStorage.getItem('messageBoardToken');
+
+    if (!token || token === '') {
+      alert('You must be logged in to add a message');
+      return false;
+    }
+
+    try {
+      const messageTitle = document.getElementById('messageTitle').value;
+      const messageContent = document.getElementById('messageContent').value;
+
+      const response = await axios.put('/messages/' + `<%= messageId %>`, {
+        messageTitle,
+        messageContent
+      }, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      console.log(response.data);
+      window.location.reload();
+    } catch (error) {
+      console.error('Error adding message:', error);
+    }
+
+  }
+
+  window.onload = loadMessage;
+</script>
