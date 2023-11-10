@@ -1,0 +1,33 @@
+<section id="navbar"
+  class="sticky top-0 flex items-center justify-center w-full bg-[#17181c]/95 backdrop-blur-sm py-4 z-10 min-h-[4.688rem]"
+  aria-label="Site Header">
+  <div class="flex flex-wrap items-center justify-between w-full max-w-full lg:w-5/6 xl:max-w-7xl px-[4%] mx-auto">
+
+    <div onclick="window.location.href = '/'" class="flex overflow-hidden select-none space-x-1 cursor-pointer
+      hover:bg-[#17181c] px-4 py-2 rounded-xl">
+
+      <!-- Notebook SVG -->
+      <img src="/images/notebook.svg" alt="Message Board Icon" class="stroke-white h-8 w-8 my-auto" />
+
+      <h2 class="font-bold tracking-tight text-white text-xl line-clamp-1 my-auto">
+        Message Board
+      </h2>
+    </div>
+
+    <nav class="hidden lg:flex lg:items-center lg:w-auto w-full lg:space-x-3">
+
+      <div class="max-w-full flex items-center justify-center space-x-6 lg:space-y-0 h-10">
+        <button onclick="window.location.href = '/login'" class="lg:block h-full flex items-center
+            justify-center bg-[#353535] hover:bg-[#3f3f3f] text-white duration-300 rounded-lg space-x-3 px-4 py-2
+            lg:px-6">
+          <h3 class="text-sm font-semibold line-clamp-1">Login</h3>
+        </button>
+      </div>
+
+    </nav>
+
+    <Bars3Icon
+      class="lg:hidden block text-[#f8f8f9] hover:text-[#6d6f71] h-8 w-8 cursor-pointer transition-colors duration-300" />
+
+  </div>
+</section>
