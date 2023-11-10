@@ -1,4 +1,4 @@
-import { body } from "express-validator";
+import { body, param } from "express-validator";
 import { UserController } from "./controller/UserController";
 import { PageController } from "./controller/PageController";
 import { MessageController } from "./controller/MessageController";
@@ -34,10 +34,72 @@ export const Routes = [
     validation: []
   }, {
     method: "GET",
+    route: "/login",
+    controller: PageController,
+    action: "loginPage",
+    authorization: false,
+    validation: []
+  }, {
+    method: "GET",
+    route: "/register",
+    controller: PageController,
+    action: "registerPage",
+    authorization: false,
+    validation: []
+  }, {
+    method: "GET",
+    route: "/message/:id/edit",
+    controller: PageController,
+    action: "editMessagePage",
+    authorization: false,
+    validation: [
+      param("id").isNumeric().withMessage("ID must be a number")
+    ]
+  }, {
+    method: "GET",
+    route: "/messages/:id",
+    controller: MessageController,
+    action: "getMessage",
+    authorization: false,
+    validation: [
+      param("id").isNumeric().withMessage("ID must be a number")
+    ]
+  }, {
+    method: "GET",
     route: "/messages",
     controller: MessageController,
     action: "allMessages",
     authorization: false,
     validation: []
+  }, {
+    method: "POST",
+    route: "/messages",
+    controller: MessageController,
+    action: "addMessage",
+    authorization: true,
+    validation: [
+      body("messageTitle").isLength({ min: 3 }).withMessage("Title must be at least 3 characters long"),
+      body("messageContent").isLength({ min: 5 }).withMessage("Content must be at least 5 characters long")
+    ]
+  },
+  {
+    method: "PUT",
+    route: "/messages/:id",
+    controller: MessageController,
+    action: "updateMessage",
+    authorization: true,
+    validation: [
+      body("messageTitle").isLength({ min: 3 }).withMessage("Title must be at least 3 characters long"),
+      body("messageContent").isLength({ min: 5 }).withMessage("Content must be at least 5 characters long")
+    ]
+  }, {
+    method: "DELETE",
+    route: "/messages/:id",
+    controller: MessageController,
+    action: "deleteMessage",
+    authorization: true,
+    validation: [
+      param("id").isNumeric().withMessage("ID must be a number")
+    ]
   }
 ] as RouteType[];

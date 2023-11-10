@@ -1,7 +1,7 @@
 import { NextFunction, Response, Request } from "express";
 import { Database } from "../utils/db.server";
 import createError = require("http-errors");
-import { generateToken } from "../utils/tokenGenerator";
+import { generateToken } from "../utils/tokenUtil";
 
 export class UserController {
 
@@ -10,14 +10,18 @@ export class UserController {
     const { userEmail, userPassword } = request.body;
 
     // Vulnerable to SQL Injection
-    const user = await Database.getInstance().query("SELECT * FROM users WHERE userEmail = '" + userEmail + "' AND userPassword = '" + userPassword + "'");
+    const user = await Database.getInstance().query("SELECT * FROM users WHERE userEmail = '" + userEmail + "' AND userPassword = '" + userPassword + "'") as User[];
 
     if (!user || user.length === 0) {
       return next(createError(400, "User not found"));
     }
 
+    const userData = user[0];
+    delete userData.userPassword;
+
     response.status(200).json({
-      message: "User logged in successfully"
+      message: "User logged in successfully",
+      user: userData
     });
   }
 

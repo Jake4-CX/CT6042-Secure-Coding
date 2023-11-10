@@ -5,6 +5,7 @@ import { validationResult } from "express-validator";
 import morgan = require("morgan");
 import { Routes } from "./routes";
 import expressEjsLayouts = require("express-ejs-layouts");
+import { tokenAuthentication } from "./middleware/tokenAuthentication";
 
 export default class App {
 
@@ -42,7 +43,7 @@ export default class App {
 
       (router)[route.method.toLowerCase()](route.route,
         ...route.validation,
-        route.authorization === true ? [] : [],
+        route.authorization === true ? tokenAuthentication : [],
         async (req: express.Request, res: express.Response, next: NextFunction) => {
           try {
             const errors = validationResult(req);
