@@ -53,7 +53,7 @@ export const Routes = [
     action: "editMessagePage",
     authorization: false,
     validation: [
-      param("id").isNumeric().withMessage("ID must be a number")
+      param("id").notEmpty().withMessage("ID must be a number")
     ]
   }, {
     method: "GET",
@@ -62,7 +62,7 @@ export const Routes = [
     action: "getMessage",
     authorization: false,
     validation: [
-      param("id").isNumeric().withMessage("ID must be a number")
+      param("id").notEmpty().withMessage("ID must be a number")
     ]
   }, {
     method: "GET",
