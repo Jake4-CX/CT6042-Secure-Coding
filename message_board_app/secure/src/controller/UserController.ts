@@ -42,7 +42,10 @@ export class UserController {
     }
 
     try {
-      await Database.getInstance().query("INSERT INTO users (userName, userEmail, userToken, userPassword) VALUES ('" + userName + "', '" + userEmail + "', '" + generateToken(16) + "', '" + userPassword + "')");
+      await Database.getInstance().query(
+        "INSERT INTO users (userName, userEmail, userToken, userPassword) VALUES (?, ?, ?, ?)",
+        [userName, userEmail, generateToken(16), userPassword]
+      );
       response.status(200).json({
         message: "User created successfully"
       });
