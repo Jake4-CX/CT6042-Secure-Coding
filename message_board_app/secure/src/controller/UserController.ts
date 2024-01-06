@@ -2,6 +2,7 @@ import { NextFunction, Response, Request } from "express";
 import { Database } from "../utils/db.server";
 import createError = require("http-errors");
 import { generateToken } from "../utils/tokenUtil";
+import bcrypt = require("bcrypt");
 
 export class UserController {
 
@@ -11,8 +12,8 @@ export class UserController {
 
     // Using parameterized query to prevent SQL Injection
     const user = await Database.getInstance().query(
-      "SELECT * FROM users WHERE userEmail = ? AND userPassword = ?",
-      [userEmail, userPassword] // values / parameters to be passed to the query
+      "SELECT * FROM users WHERE userEmail = ?",
+      [userEmail] // values / parameters to be passed to the query
     ) as User[];
 
     if (!user || user.length === 0) {
@@ -20,6 +21,12 @@ export class UserController {
     }
 
     const userData = user[0];
+
+    // Check if password matches
+    const passwordMatch = await bcrypt.compare(userPassword, userData.userPassword);
+
+    if (!passwordMatch) return next(createError(400, "Password incorrect"));
+
     delete userData.userPassword;
 
     response.status(200).json({
@@ -44,7 +51,7 @@ export class UserController {
     try {
       await Database.getInstance().query(
         "INSERT INTO users (userName, userEmail, userToken, userPassword) VALUES (?, ?, ?, ?)",
-        [userName, userEmail, generateToken(16), userPassword]
+        [userName, userEmail, generateToken(16), await bcrypt.hash(userPassword, 10)]
       );
       response.status(200).json({
         message: "User created successfully"
