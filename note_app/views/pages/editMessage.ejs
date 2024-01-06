@@ -46,7 +46,7 @@
     }
 
     try {
-      const response = await axios.get('/messages/' + messageId);
+      const response = await axios.get('/message?id=' + messageId);
       const message = response.data;
 
       if (message == null || message == undefined) {

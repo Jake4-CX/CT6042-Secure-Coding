@@ -94,7 +94,7 @@ export class MessageController {
 
   async getMessage(request: Request, response: Response, next: NextFunction) {
 
-    const { id } = request.params;
+    const { id } = request.query;
 
     const message = await Database.getInstance().query("SELECT messages.id, messages.messageTitle, messages.messageContent, " +
       " messages.createdAt, messages.updatedAt, users.id AS userId, users.userName, users.createdAt AS userCreatedAt, " +

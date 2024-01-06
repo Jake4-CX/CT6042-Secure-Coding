@@ -1,4 +1,4 @@
-import { body, param } from "express-validator";
+import { body, param, query } from "express-validator";
 import { UserController } from "./controller/UserController";
 import { PageController } from "./controller/PageController";
 import { MessageController } from "./controller/MessageController";
@@ -11,7 +11,7 @@ export const Routes = [
     action: "loginUser",
     authorization: false,
     validation: [
-      body("userEmail").isEmail().withMessage("Email is not valid"),
+      body("userEmail").isString().withMessage("Email is not valid"),
       body("userPassword").isLength({ min: 5 }).withMessage("Password must be at least 5 characters long")
     ]
   }, {
@@ -57,12 +57,12 @@ export const Routes = [
     ]
   }, {
     method: "GET",
-    route: "/messages/:id",
+    route: "/message",
     controller: MessageController,
     action: "getMessage",
     authorization: false,
     validation: [
-      param("id").notEmpty().withMessage("ID must be a number")
+      query("id").notEmpty().withMessage("ID must be a number")
     ]
   }, {
     method: "GET",
