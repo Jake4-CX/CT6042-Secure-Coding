@@ -1,0 +1,28 @@
+{
+  "compilerOptions": {
+    "lib": [
+      "es6",
+      "es5",
+      "ESNext",
+      "DOM"
+    ],
+    "target": "es6",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "outDir": "./build",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "sourceMap": true
+  },
+  "typeRoots": [
+    "./node_modules/@types",
+    "./src/types"
+  ],
+  "include": [
+    "./src/**/*",
+    "./package.json",
+  ],
+  "files": [
+    "./src/types/types.d.ts"
+  ]
+}

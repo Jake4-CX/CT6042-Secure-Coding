@@ -1,0 +1,78 @@
+<div class="w-full max-w-lg space-y-1 mx-[4%] bg-gray-50 rounded-lg p-4">
+
+  <form class="space-y-3" onsubmit="return registerAccount(event)">
+
+    <!-- Username Input Field -->
+    <div class="w-full">
+      <label for="username" class="text-gray-900 text-sm font-semibold">Username</label>
+      <input type="text" name="username" id="username"
+        class="w-full h-8 px-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-gray-400 duration-300 focus:border-transparent"
+        placeholder="Enter your username" required />
+    </div>
+
+    <!-- Email Input Field -->
+    <div class="w-full">
+      <label for="email" class="text-gray-900 text-sm font-semibold">Email</label>
+      <input type="email" name="email" id="email"
+        class="w-full h-8 px-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-gray-400 duration-300 focus:border-transparent"
+        placeholder="Enter your email" required />
+    </div>
+
+    <!-- Password Input Field -->
+
+    <div class="w-full">
+      <label for="password" class="text-gray-900 text-sm font-semibold">Password</label>
+      <input type="password" name="password" id="password"
+        class="w-full h-8 px-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-gray-400 duration-300 focus:border-transparent"
+        placeholder="Enter your password" required />
+    </div>
+
+    <!-- Submit (Register) button -->
+    <div class="w-full min-h-12 bg-green-500 hover:bg-green-600 duration-300 rounded-lg px-2 py-1">
+      <button class="w-full h-full flex items-center justify-center text-gray-100 ">
+        <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+        </svg>
+        Register
+      </button>
+    </div>
+
+    <!-- Login href -->
+    <div class="w-full flex items-center justify-end space-x-1 mt-3 text-xs">
+      <p class="text-gray-900">Already have an account?</p>
+      <a href="/login" class="text-green-500 hover:text-green-600 duration-300 font-semibold">Login.</a>
+    </div>
+
+  </form>
+</div>
+
+<script>
+
+  async function registerAccount(e) {
+
+    e.preventDefault();
+
+    const username = document.getElementById('username').value;
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+
+    try {
+      const response = await axios.post('/users/register', {
+        userName: username,
+        userEmail: email,
+        userPassword: password
+      });
+
+      if ([200, 201].includes(response.status)) {
+        window.location.href = '/';
+      } else {
+        throw new Error('Unable to register user');
+      }
+
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+</script>
