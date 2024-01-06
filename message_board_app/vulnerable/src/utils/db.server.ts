@@ -44,12 +44,12 @@ export class Database {
       id int(11) NOT NULL AUTO_INCREMENT,
       userName varchar(24) NOT NULL,
       userEmail varchar(64) NOT NULL,
-      userPassword varchar(32) NOT NULL,
+      userPassword varchar(92) NOT NULL,
       userToken varchar(32) NOT NULL,
       createdAt datetime DEFAULT current_timestamp(),
       updatedAt datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
       PRIMARY KEY (id)
-    ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci`;
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci`;
 
     const createMessagesTable = `CREATE TABLE IF NOT EXISTS messages (
       id int(11) NOT NULL AUTO_INCREMENT,
@@ -61,7 +61,7 @@ export class Database {
       PRIMARY KEY (id),
       KEY fk_user_idx (userId),
       CONSTRAINT fk_user FOREIGN KEY (userId) REFERENCES users (id) ON DELETE CASCADE ON UPDATE NO ACTION
-    ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci`;
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci`;
 
     await this.query(createUsersTable);
     await this.query(createMessagesTable);
