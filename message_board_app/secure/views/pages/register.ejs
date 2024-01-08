@@ -27,9 +27,16 @@
         placeholder="Enter your password" required />
     </div>
 
+    <!-- reCAPTCHA -->
+    <div class="flex w-full items-center justify-center">
+      <div id="recaptcha-element" class="g-recaptcha" data-sitekey="<%= recaptchaSiteKey %>"
+        data-callback="recaptchaCallback"></div>
+    </div>
+
     <!-- Submit (Register) button -->
     <div class="w-full min-h-12 bg-green-500 hover:bg-green-600 duration-300 rounded-lg px-2 py-1">
-      <button class="w-full h-full flex items-center justify-center text-gray-100 ">
+      <button class="w-full h-full flex items-center justify-center text-gray-100" id="registerButton"
+        style="cursor: not-allowed;" disabled>
         <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
           xmlns="http://www.w3.org/2000/svg">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
@@ -48,6 +55,27 @@
 </div>
 
 <script>
+  var recaptchaWidgetId;
+
+  function onRecaptchaLoad() {
+    // Render the reCAPTCHA and store the widget ID
+    recaptchaWidgetId = grecaptcha.render('recaptcha-element', {
+      'sitekey': '<%= recaptchaSiteKey %>',
+      'callback': function () {
+        var registerButton = document.getElementById('registerButton');
+        registerButton.disabled = false;
+        registerButton.style.cursor = 'pointer';
+      }
+    });
+  }
+
+  function resetRecaptcha() {
+    grecaptcha.reset(recaptchaWidgetId);
+
+    var registerButton = document.getElementById('registerButton');
+    registerButton.disabled = true;
+    registerButton.style.cursor = 'not-allowed';
+  }
 
   async function registerAccount(e) {
 
@@ -57,21 +85,28 @@
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
 
+    const recaptchaResponse = grecaptcha.getResponse(recaptchaWidgetId);
+
     try {
       const response = await axios.post('/users/register', {
         userName: username,
         userEmail: email,
-        userPassword: password
+        userPassword: password,
+        recaptchaToken: recaptchaResponse
       });
 
       if ([200, 201].includes(response.status)) {
         window.location.href = '/';
       } else {
-        throw new Error('Unable to register user');
+        alert(response.data.message);
+        resetRecaptcha(); // Reset the reCAPTCHA
       }
 
     } catch (error) {
       console.log(error);
+      alert(error.response.data.message);
+      
+      resetRecaptcha();
     }
   }
 

@@ -11,12 +11,14 @@ export class PageController {
   async loginPage(request: Request, response: Response, next: NextFunction) {
     response.render("pages/login", {
       layout: "../views/layouts/layout",
+      recaptchaSiteKey: process.env.RECAPTCHA_SITE_KEY
     })
   }
 
   async registerPage(request: Request, response: Response, next: NextFunction) {
     response.render("pages/register", {
       layout: "../views/layouts/layout",
+      recaptchaSiteKey: process.env.RECAPTCHA_SITE_KEY
     })
   }
 

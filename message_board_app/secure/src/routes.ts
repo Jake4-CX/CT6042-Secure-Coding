@@ -12,7 +12,8 @@ export const Routes = [
     authorization: false,
     validation: [
       body("userEmail").isString().withMessage("Email is not valid"),
-      body("userPassword").isLength({ min: 5 }).withMessage("Password must be at least 5 characters long")
+      body("userPassword").isLength({ min: 5 }).withMessage("Password must be at least 5 characters long"),
+      body("recaptchaToken").isString().withMessage("Recaptcha token is not valid")
     ]
   }, {
     method: "POST",
@@ -23,7 +24,8 @@ export const Routes = [
     validation: [
       body("userName").isLength({ min: 3 }).withMessage("Name must be at least 3 characters long"),
       body("userEmail").isEmail().withMessage("Email is not valid"),
-      body("userPassword").isLength({ min: 5 }).withMessage("Password must be at least 5 characters long")
+      body("userPassword").isLength({ min: 5 }).withMessage("Password must be at least 5 characters long"),
+      body("recaptchaToken").isString().withMessage("Recaptcha token is not valid")
     ]
   }, {
     method: "GET",

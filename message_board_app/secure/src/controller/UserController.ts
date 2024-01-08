@@ -3,12 +3,18 @@ import { Database } from "../utils/db.server";
 import createError = require("http-errors");
 import { generateToken } from "../utils/tokenUtil";
 import bcrypt = require("bcrypt");
+import { verifyRecaptcha } from "../utils/recaptcha";
 
 export class UserController {
 
   async loginUser(request: Request, response: Response, next: NextFunction) {
 
-    const { userEmail, userPassword } = request.body;
+    const { userEmail, userPassword, recaptchaToken } = request.body;
+
+    // Validate recaptcha token
+    if (!(await verifyRecaptcha(recaptchaToken))) {
+      return next(createError(400, "Recaptcha validation failed"));
+    }
 
     // Using parameterized query to prevent SQL Injection
     const user = await Database.getInstance().query(
@@ -37,7 +43,12 @@ export class UserController {
 
   async registerUser(request: Request, response: Response, next: NextFunction) {
 
-    const { userName, userEmail, userPassword } = request.body;
+    const { userName, userEmail, userPassword, recaptchaToken } = request.body;
+
+    // Validate recaptcha token
+    if (!(await verifyRecaptcha(recaptchaToken))) {
+      return next(createError(400, "Recaptcha validation failed"));
+    }
 
     const user = await Database.getInstance().query(
       "SELECT * FROM users WHERE userName = ? OR userEmail = ?",
