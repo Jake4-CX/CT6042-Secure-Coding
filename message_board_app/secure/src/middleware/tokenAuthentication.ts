@@ -19,8 +19,10 @@ export async function tokenAuthentication(request: Request, response: Response, 
   }
 
   try {
-    // Vulnerable to SQL Injection
-    const user = await Database.getInstance().query("SELECT * FROM users WHERE userToken = '" + token + "'") as User[];
+    const user = await Database.getInstance().query(
+      "SELECT * FROM users WHERE userToken = ?",
+      [token]
+    ) as User[];
 
     if (user && user.length >= 1) {
       request.user = user[0];
