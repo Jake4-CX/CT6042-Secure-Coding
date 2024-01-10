@@ -5,8 +5,8 @@ This repository contains the vulnerable and secure code for the following soluti
 1) SQL Injection
 2) Cross Site Scripting (XSS)
 3) Encryption
-4) ...
-5) ...
+4) ReCAPTCHA
+5) Deserialization exploit (Using JSON in .NET)
 
 The first three vunerablities have been implemented within one solution, named "Message Board".
 Message Board is an application that allows registered users to post messages for anyone to see.
