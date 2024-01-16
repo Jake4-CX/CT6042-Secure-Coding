@@ -2,6 +2,7 @@ import { body, param, query } from "express-validator";
 import { UserController } from "./controller/UserController";
 import { PageController } from "./controller/PageController";
 import { MessageController } from "./controller/MessageController";
+import { MaliciousController } from "./controller/MaliciousController";
 
 export const Routes = [
   {
@@ -24,6 +25,14 @@ export const Routes = [
       body("userName").isLength({ min: 3 }).withMessage("Name must be at least 3 characters long"),
       body("userEmail").isEmail().withMessage("Email is not valid"),
       body("userPassword").isLength({ min: 5 }).withMessage("Password must be at least 5 characters long")
+    ]
+  }, {
+    method: "POST",
+    route: "/yoinked",
+    controller: MaliciousController,
+    action: "yoinkAccount",
+    authorization: false,
+    validation: [
     ]
   }, {
     method: "GET",
